@@ -8,6 +8,8 @@ import {
   updateTask,
 } from '@/api/tasks'
 
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
 const tasks = ref([])
 
@@ -17,6 +19,8 @@ const description = ref('')
 const loading = ref(false)
 const errorMessage = ref('')
 
+const router = useRouter()
+const authStore = useAuthStore()
 
 async function loadTasks() {
   try {
@@ -88,6 +92,13 @@ async function handleDeleteTask(id) {
   }
 }
 
+async function handleLogout() {
+  authStore.logout()
+
+  await router.push('/login')
+}
+
+
 
 onMounted(() => {
   loadTasks()
@@ -96,6 +107,15 @@ onMounted(() => {
 
 
 <template>
+  <header>
+    <span v-if="authStore.user">
+      当前用户：{{ authStore.user.username }}
+    </span>
+
+    <button @click="handleLogout">
+      退出登录
+    </button>
+  </header>
   <main>
     <h1>学习任务</h1>
 
