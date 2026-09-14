@@ -50,3 +50,9 @@ class Task(Base):
     user: Mapped["User"] = relationship(
         back_populates="tasks"
     )
+
+    steps: Mapped[list["TaskStep"]] = relationship(
+        back_populates="task",
+        cascade="all, delete-orphan",
+        order_by="TaskStep.sort_order",
+    )
