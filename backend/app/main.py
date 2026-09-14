@@ -3,10 +3,7 @@ from fastapi import FastAPI
 from app.database import Base, engine
 from app.models import task
 from app.routers.tasks import router as tasks_router
-
-
-Base.metadata.create_all(bind=engine)
-
+from app.routers.auth import router as auth_router
 
 app = FastAPI(
     title="zero-2-tech API"
@@ -14,7 +11,7 @@ app = FastAPI(
 
 
 app.include_router(tasks_router)
-
+app.include_router(auth_router)
 
 @app.get("/api/health")
 async def health_check():

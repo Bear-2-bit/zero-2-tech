@@ -15,7 +15,8 @@ from app.schemas.task import (
     TaskResponse,
     TaskUpdate,
 )
-
+from app.core.dependencies import get_current_user
+from app.models.user import User
 
 router = APIRouter(
     prefix="/api/tasks",
@@ -25,9 +26,15 @@ router = APIRouter(
 
 def get_task_or_404(
     task_id: int,
+    user_id: int,
     db: Session,
 ) -> Task:
-    task = db.get(Task, task_id)
+    statement = select(Task).where(
+        Task.id == task_id,
+        Task.user_id == user_id,
+    )
+
+    task = db.scalar(statement)
 
     if task is None:
         raise HTTPException(
@@ -46,8 +53,12 @@ def get_task_or_404(
 def create_task(
     task_data: TaskCreate,
     db: Session = Depends(get_db),
+    current_user: User = Depends(
+        get_current_user
+    ),
 ):
     task = Task(
+        user_id=current_user.id,
         title=task_data.title,
         description=task_data.description,
     )
@@ -65,8 +76,17 @@ def create_task(
 )
 def get_tasks(
     db: Session = Depends(get_db),
+    current_user: User = Depends(
+        get_current_user
+    ),
 ):
-    statement = select(Task)
+    statement = (
+        select(Task)
+        .where(
+            Task.user_id == current_user.id
+        )
+        .order_by(Task.id.desc())
+    )
 
     tasks = db.scalars(statement).all()
 
@@ -80,12 +100,15 @@ def get_tasks(
 def get_task(
     task_id: int = Path(gt=0),
     db: Session = Depends(get_db),
+    current_user: User = Depends(
+        get_current_user
+    ),
 ):
     return get_task_or_404(
         task_id=task_id,
+        user_id=current_user.id,
         db=db,
     )
-
 
 @router.put(
     "/{task_id}",
@@ -95,9 +118,13 @@ def update_task(
     task_data: TaskUpdate,
     task_id: int = Path(gt=0),
     db: Session = Depends(get_db),
+    current_user: User = Depends(
+        get_current_user
+    ),
 ):
     task = get_task_or_404(
         task_id=task_id,
+        user_id=current_user.id,
         db=db,
     )
 
@@ -121,9 +148,13 @@ def update_task(
 def delete_task(
     task_id: int = Path(gt=0),
     db: Session = Depends(get_db),
+    current_user: User = Depends(
+        get_current_user
+    ),
 ):
     task = get_task_or_404(
         task_id=task_id,
+        user_id=current_user.id,
         db=db,
     )
 
