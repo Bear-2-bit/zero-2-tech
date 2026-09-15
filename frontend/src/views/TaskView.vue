@@ -336,17 +336,6 @@ onMounted(() => {
   <!-- 顶部用户信息 -->
   <!-- ====================== -->
 
-  <header>
-    <span v-if="authStore.user">
-      当前用户：{{ authStore.user.username }}
-    </span>
-
-    <button @click="handleLogout">
-      退出登录
-    </button>
-  </header>
-
-
   <main>
     <h1>学习任务</h1>
 

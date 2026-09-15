@@ -6,9 +6,8 @@ import {
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import TaskView from '@/views/TaskView.vue'
-
 import { useAuthStore } from '@/stores/auth'
-
+import DashboardView from '@/views/DashboardView.vue'
 
 const router = createRouter({
   history: createWebHistory(
@@ -18,7 +17,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/tasks',
+      redirect: '/dashboard',
     },
 
     {
@@ -38,6 +37,15 @@ const router = createRouter({
       name: 'tasks',
       component: TaskView,
 
+      meta: {
+        requiresAuth: true,
+      },
+    },
+
+     {
+      path: '/dashboard',
+      name: 'dashboard',
+      component: DashboardView,
       meta: {
         requiresAuth: true,
       },
