@@ -25,7 +25,7 @@ async function handleLogin() {
       password.value
     )
 
-    await router.push('/tasks')
+    await router.push('/dashboard')
   } catch (error) {
     console.error(error)
 

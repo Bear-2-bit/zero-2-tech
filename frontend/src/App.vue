@@ -21,7 +21,7 @@ async function handleLogout() {
     <header v-if="authStore.isLoggedIn">
       <nav>
         <RouterLink to="/dashboard">
-          Dashboard
+          任务面板
         </RouterLink>
 
         <RouterLink to="/tasks">
